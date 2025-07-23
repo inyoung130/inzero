@@ -76,7 +76,7 @@ elif menu == "📈 성적 분석":
 
 elif menu == "🎶 집중MUSIC":
     st.header("🎶 집중MUSIC 플레이어")
-    st.write("잔잔한 클래식 음악으로 집중력UP 성적UP")
+    st.info("잔잔한 클래식 음악으로 집중력UP 성적UP")
 
     classical_choice = st.selectbox("🎼 클래식 곡 선택", [
         "🎵 Slow Motion – Bensound",
