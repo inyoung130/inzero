@@ -189,13 +189,88 @@ if menu == "⏱️ 뽀모도로 타이머":
             st.session_state.running = False
             st.rerun()
 
+# ---------------- 플래시카드 기능 ----------------
+import random
 
+if menu == "🧠 플래시카드 기능":
+    st.header("🧠 플래시카드 학습")
+
+    # 상태 초기화
+    if "flashcards" not in st.session_state:
+        st.session_state.flashcards = {}
+    if "current_category" not in st.session_state:
+        st.session_state.current_category = "기본"
+    if "current_index" not in st.session_state:
+        st.session_state.current_index = 0
+    if "show_answer" not in st.session_state:
+        st.session_state.show_answer = False
+
+    # 카테고리 선택 또는 추가
+    categories = list(st.session_state.flashcards.keys())
+    if "기본" not in categories:
+        categories.insert(0, "기본")
+
+    selected_category = st.selectbox("📁 카테고리 선택", categories + ["➕ 새 카테고리 추가"])
+    if selected_category == "➕ 새 카테고리 추가":
+        new_category = st.text_input("새 카테고리 이름")
+        if st.button("📂 카테고리 생성") and new_category:
+            st.session_state.flashcards[new_category] = []
+            st.session_state.current_category = new_category
+            st.success(f"'{new_category}' 카테고리가 생성되었습니다.")
+    else:
+        st.session_state.current_category = selected_category
+        if selected_category not in st.session_state.flashcards:
+            st.session_state.flashcards[selected_category] = []
+
+    # 카드 추가
+    st.markdown("### ➕ 플래시카드 추가")
+    with st.form("add_card_form"):
+        question = st.text_input("앞면 (질문)")
+        answer = st.text_input("뒷면 (답변)")
+        submitted = st.form_submit_button("➕ 추가")
+        if submitted and question.strip() and answer.strip():
+            st.session_state.flashcards[st.session_state.current_category].append({
+                "question": question.strip(),
+                "answer": answer.strip()
+            })
+            st.success("✅ 카드가 추가되었습니다.")
+
+    st.markdown("---")
+
+    # 카드 리스트
+    cards = st.session_state.flashcards.get(st.session_state.current_category, [])
+
+    if cards:
+        # 카드 셔플 여부
+        if st.checkbox("🔀 카드 순서 섞기", key="shuffle_cards"):
+            random.shuffle(cards)
+
+        # 현재 카드
+        card = cards[st.session_state.current_index]
+        st.subheader(f"📌 카드 {st.session_state.current_index + 1} / {len(cards)}")
+        st.markdown(f"**앞면:** {card['question']}")
+
+        if st.session_state.show_answer:
+            st.markdown(f"✅ **뒷면:** {card['answer']}")
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            if st.button("👀 정답 보기"):
+                st.session_state.show_answer = True
+        with col2:
+            if st.button("➡️ 다음 카드"):
+                st.session_state.current_index = (st.session_state.current_index + 1) % len(cards)
+                st.session_state.show_answer = False
+        with col3:
+            if st.button("🗑️ 카드 삭제"):
+                deleted = cards.pop(st.session_state.current_index)
+                st.success(f"'{deleted['question']}' 카드가 삭제되었습니다.")
+                st.session_state.current_index = 0
+                st.session_state.show_answer = False
+    else:
+        st.info("아직 이 카테고리에 카드가 없습니다. 위에서 추가해보세요.")
 
 # ---------------- 기타 메뉴 ----------------
-
-elif menu == "🧠 플래시카드 기능":
-    st.header("🧠 플래시카드 기능")
-    st.info("이 기능은 곧 추가될 예정입니다.")
 
 elif menu == "📊 리포트 보기":
     st.header("📊 리포트 보기")
