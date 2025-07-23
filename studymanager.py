@@ -57,6 +57,85 @@ st.title("📚 스터디 매니저")
 if menu == "📝 스터디 플래너":
     st.header("📝 스터디 플래너")
     st.info("과목별 과제, 시간 관리에 효과적👌")
+import streamlit as st
+from datetime import datetime
+
+st.set_page_config(page_title="📝 스터디 플래너", layout="wide")
+st.title("📝 스터디 플래너 (타이머 포함)")
+
+NUM_TASKS = 10  # 과제 수
+
+# 세션 상태 초기화
+if "tasks" not in st.session_state:
+    st.session_state.tasks = [{
+        "name": "",
+        "started": False,
+        "start_time": None,
+        "end_time": None,
+        "duration": ""
+    } for _ in range(NUM_TASKS)]
+
+# 각 과제에 대해 입력 및 타이머 구현
+for i in range(NUM_TASKS):
+    st.markdown(f"### 📚 과제 {i + 1}")
+    col1, col2 = st.columns([4, 1])
+
+    # 과제명 입력
+    with col1:
+        task_name = st.text_input("과제 이름", value=st.session_state.tasks[i]["name"], key=f"task_name_{i}")
+        st.session_state.tasks[i]["name"] = task_name
+
+    # 타이머 시작 버튼
+    if not st.session_state.tasks[i]["started"]:
+        if col2.button("▶ 시작", key=f"start_{i}") and task_name.strip() != "":
+            st.session_state.tasks[i]["start_time"] = datetime.now()
+            st.session_state.tasks[i]["started"] = True
+            st.session_state.tasks[i]["end_time"] = None
+            st.session_state.tasks[i]["duration"] = ""
+            st.success(f"{task_name} 시작!")
+
+    # 타이머 종료 버튼
+    if st.session_state.tasks[i]["started"]:
+        if col2.button("⏹ 종료", key=f"stop_{i}"):
+            end_time = datetime.now()
+            start_time = st.session_state.tasks[i]["start_time"]
+            duration = end_time - start_time
+            total_seconds = int(duration.total_seconds())
+            hours = total_seconds // 3600
+            minutes = (total_seconds % 3600) // 60
+            seconds = total_seconds % 60
+            formatted = f"{hours}시간 {minutes}분 {seconds}초"
+
+            st.session_state.tasks[i]["end_time"] = end_time
+            st.session_state.tasks[i]["duration"] = formatted
+            st.session_state.tasks[i]["started"] = False
+            st.success(f"{task_name} 종료 - 소요 시간: {formatted}")
+
+    # 상태 출력
+    if st.session_state.tasks[i]["duration"]:
+        st.info(f"⏱️ 소요 시간: {st.session_state.tasks[i]['duration']}")
+    elif st.session_state.tasks[i]["started"]:
+        st.warning("⏳ 진행 중...")
+
+# --- 요약 테이블 ---
+st.markdown("---")
+st.subheader("📋 오늘의 과제 요약")
+
+summary = []
+for task in st.session_state.tasks:
+    if task["name"].strip():
+        summary.append({
+            "과제명": task["name"],
+            "소요 시간": task["duration"] if task["duration"] else ("진행 중" if task["started"] else "")
+        })
+
+if summary:
+    import pandas as pd
+    df = pd.DataFrame(summary)
+    st.dataframe(df)
+else:
+    st.write("과제를 입력하고 타이머를 사용해보세요.")
+
 
 elif menu == "⏱️ 뽀모도로 타이머":
     st.header("⏱️ 뽀모도로 타이머")
