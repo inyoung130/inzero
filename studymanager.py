@@ -1,9 +1,10 @@
 import streamlit as st
 from datetime import datetime
 
+# --- 페이지 설정 ---
 st.set_page_config(page_title="스터디 매니저", layout="wide")
 
-# --- 명언 리스트 ---
+# --- 오늘의 명언 리스트 ---
 quotes = [
     "성공은 우연이 아니다. 노력, 인내, 배움, 공부, 희생, 그리고 무엇보다 자신이 하고 있는 일에 대한 사랑, 하는 법을 배우는 것이다. – 펠레",
     "지식에 대한 투자는 최고의 보상을 가져다 줄 것이다. – 벤자민 프랭클린",
@@ -27,16 +28,22 @@ quotes = [
     "제가 하는 가장 큰 후회는 한 단어로 요약할 수 있는데, 그것은 ‘미루기’ 입니다. – 론 쿠퍼"
 ]
 
-# --- 현재 시간 기준으로 명언 인덱스 선택 (10분 간격 변경) ---
+# --- 현재 시각 기준으로 10분 간격 인덱스 선택 ---
 now = datetime.now()
 quote_index = (now.hour * 6 + now.minute // 10) % len(quotes)
 today_quote = quotes[quote_index]
 
 # --- 사이드바 ---
 with st.sidebar:
+    # 오늘의 명언
     st.markdown("### ✨ 오늘의 명언")
     st.markdown(f"> _{today_quote}_")
 
+    # 메뉴와의 여백
+    st.markdown("---")
+    st.markdown("<br><br><br>", unsafe_allow_html=True)
+
+    # 메뉴 선택
     menu = st.radio("📂 메뉴 선택", [
         "스터디 플래너",
         "뽀모도로 타이머",
@@ -46,21 +53,30 @@ with st.sidebar:
         "백색소음 🎵"
     ])
 
-# --- 상단 공통 타이틀 ---
+# --- 페이지 상단 제목 ---
 st.title("📚 스터디 매니저")
 
-# --- 각 메뉴에 따라 페이지 분기 ---
+# --- 메뉴별 페이지 내용 (기본 틀만 제공) ---
 if menu == "스터디 플래너":
     st.header("📝 스터디 플래너")
-    # 구현 예정
+    st.info("과목, 과제, 시간 관리 기능을 여기에 구현합니다.")
+
 elif menu == "뽀모도로 타이머":
     st.header("⏱️ 뽀모도로 타이머")
+    st.info("25분 집중 / 5분 휴식 타이머를 여기에 구현합니다.")
+
 elif menu == "플래시카드 기능":
     st.header("🧠 플래시카드")
+    st.info("질문과 답변으로 구성된 카드 학습 기능을 여기에 구현합니다.")
+
 elif menu == "리포트 보기":
     st.header("📊 리포트 보기")
+    st.info("공부 시간 통계와 과목별 분석을 여기에 표시합니다.")
+
 elif menu == "성적 분석":
     st.header("📈 성적 분석")
+    st.info("시험 점수 기록 및 추이 분석을 여기에 구현합니다.")
+
 elif menu == "백색소음 🎵":
     st.header("🎵 백색소음 플레이어")
     st.write("공부할 때 집중을 도와주는 자연의 소리를 재생합니다.")
