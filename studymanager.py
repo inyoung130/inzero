@@ -70,7 +70,7 @@ if st.session_state.tasks:
     for i, task in enumerate(st.session_state.tasks):
         with st.expander(f"{task['subject']} - {task['task']}"):
             col1, col2 = st.columns([5, 1])
-                with col1:
+            with col1:
                     if task["duration"]:
                         st.info(f"⏱️ 소요 시간: {task['duration']}")
                     elif task["started"]:
