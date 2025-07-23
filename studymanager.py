@@ -42,8 +42,8 @@ from datetime import datetime
 import pandas as pd
 
 # ---------------- 스터디 플래너 ----------------
-st.header("📝 과목별 스터디 플래너")
-
+if menu == "📝 스터디 플래너":
+    st.header("📝 스터디 플래너")
 # 과제 리스트 초기화
 if "tasks" not in st.session_state:
     st.session_state.tasks = []
