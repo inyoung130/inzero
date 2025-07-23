@@ -55,6 +55,18 @@ with st.sidebar:
         if st.button("초기화 실행"):
             st.session_state.confirm_reset = True
 
+# ---------------- 테마 색상 실제 적용 ----------------
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-color: {theme_color};
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 
 
 # ---------------- 스터디 플래너 ----------------
