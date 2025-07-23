@@ -74,8 +74,8 @@ elif menu == "📈 성적 분석":
     st.header("📈 성적 분석")
     st.info("시험 점수 기록 및 분석")
 
-elif menu == "🎶 집중 음악":
-    st.header("🎶 집중 음악 플레이어")
+elif menu == "🎶 백색소음":
+    st.header("🎶 백색소음 플레이어")
     st.write("잔잔한 클래식과 자연의 백색소음으로 집중력 UP!!")
 
     music_choice = st.selectbox("사운드 선택", [
