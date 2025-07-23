@@ -54,64 +54,101 @@ if menu == "📝 스터디 플래너":
     NUM_TASKS = 10
     st.header("📝 스터디 플래너 (타이머 포함)")
 
-    if "tasks" not in st.session_state:
-        st.session_state.tasks = [{
-            "name": "",
-            "started": False,
+    import streamlit as st
+from datetime import datetime
+import pandas as pd
+
+st.set_page_config(page_title="스터디 플래너", layout="wide")
+st.title("📝 과목별 스터디 플래너")
+
+# 과목 리스트
+default_subjects = ["국어", "수학", "영어", "사회", "과학", "한국사", "직접 추가"]
+
+# 세션 상태 초기화
+if "tasks" not in st.session_state:
+    st.session_state.tasks = []
+
+# --- 과제 추가 영역 ---
+st.subheader("➕ 새로운 과제 추가")
+col1, col2, col3 = st.columns([2, 3, 2])
+
+with col1:
+    subject = st.selectbox("과목 선택", default_subjects, key="subject_select")
+
+with col2:
+    if subject == "직접 추가":
+        subject = st.text_input("직접 입력한 과목명", key="custom_subject")
+    task_name = st.text_input("과제명 입력", key="task_input")
+
+with col3:
+    if st.button("✅ 과제 추가") and task_name.strip() and subject.strip():
+        st.session_state.tasks.append({
+            "subject": subject.strip(),
+            "task": task_name.strip(),
             "start_time": None,
             "end_time": None,
-            "duration": ""
-        } for _ in range(NUM_TASKS)]
+            "duration": "",
+            "started": False
+        })
+        st.success(f"'{subject}' 과목에 '{task_name}' 과제가 추가되었습니다.")
 
-    for i in range(NUM_TASKS):
-        st.markdown(f"### 📚 과제 {i + 1}")
-        col1, col2 = st.columns([4, 1])
-        with col1:
-            task_name = st.text_input("과제 이름", value=st.session_state.tasks[i]["name"], key=f"task_name_{i}")
-            st.session_state.tasks[i]["name"] = task_name
+# --- 과제 리스트 출력 ---
+st.subheader("📋 과제 목록 (타이머 포함)")
 
-        if not st.session_state.tasks[i]["started"]:
-            if col2.button("▶ 시작", key=f"start_{i}") and task_name.strip():
-                st.session_state.tasks[i]["start_time"] = datetime.now()
-                st.session_state.tasks[i]["started"] = True
-                st.session_state.tasks[i]["end_time"] = None
-                st.session_state.tasks[i]["duration"] = ""
-                st.success(f"{task_name} 시작!")
+if st.session_state.tasks:
+    for i, task in enumerate(st.session_state.tasks):
+        with st.expander(f"{task['subject']} - {task['task']}"):
+            col1, col2 = st.columns([5, 1])
+            with col1:
+                if task["duration"]:
+                    st.info(f"⏱️ 소요 시간: {task['duration']}")
+                elif task["started"]:
+                    st.warning("⏳ 진행 중...")
 
-        if st.session_state.tasks[i]["started"]:
-            if col2.button("⏹ 종료", key=f"stop_{i}"):
-                end_time = datetime.now()
-                start_time = st.session_state.tasks[i]["start_time"]
-                duration = end_time - start_time
-                total_seconds = int(duration.total_seconds())
-                hours = total_seconds // 3600
-                minutes = (total_seconds % 3600) // 60
-                seconds = total_seconds % 60
-                formatted = f"{hours}시간 {minutes}분 {seconds}초"
-                st.session_state.tasks[i]["end_time"] = end_time
-                st.session_state.tasks[i]["duration"] = formatted
-                st.session_state.tasks[i]["started"] = False
-                st.success(f"{task_name} 종료 - 소요 시간: {formatted}")
+            with col2:
+                if not task["started"]:
+                    if st.button("▶ 시작", key=f"start_{i}") and task["task"].strip():
+                        st.session_state.tasks[i]["start_time"] = datetime.now()
+                        st.session_state.tasks[i]["started"] = True
+                        st.session_state.tasks[i]["end_time"] = None
+                        st.session_state.tasks[i]["duration"] = ""
+                        st.success("공부 시작!")
+                else:
+                    if st.button("⏹ 종료", key=f"stop_{i}"):
+                        end_time = datetime.now()
+                        start_time = st.session_state.tasks[i]["start_time"]
+                        duration = end_time - start_time
+                        total_sec = int(duration.total_seconds())
+                        h = total_sec // 3600
+                        m = (total_sec % 3600) // 60
+                        s = total_sec % 60
+                        formatted = f"{h}시간 {m}분 {s}초"
+                        st.session_state.tasks[i]["end_time"] = end_time
+                        st.session_state.tasks[i]["duration"] = formatted
+                        st.session_state.tasks[i]["started"] = False
+                        st.success(f"공부 종료 - {formatted}")
+else:
+    st.info("과제를 추가하면 이곳에 표시됩니다.")
 
-        if st.session_state.tasks[i]["duration"]:
-            st.info(f"⏱️ 소요 시간: {st.session_state.tasks[i]['duration']}")
-        elif st.session_state.tasks[i]["started"]:
-            st.warning("⏳ 진행 중...")
+# --- 요약 테이블 ---
+st.markdown("---")
+st.subheader("📊 오늘의 공부 요약")
 
-    st.markdown("---")
-    st.subheader("📋 오늘의 과제 요약")
-    summary = []
-    for task in st.session_state.tasks:
-        if task["name"].strip():
-            summary.append({
-                "과제명": task["name"],
-                "소요 시간": task["duration"] if task["duration"] else ("진행 중" if task["started"] else "")
-            })
-    if summary:
-        df = pd.DataFrame(summary)
-        st.dataframe(df)
-    else:
-        st.write("과제를 입력하고 타이머를 사용해보세요.")
+summary_data = [
+    {
+        "과목": task["subject"],
+        "과제명": task["task"],
+        "소요 시간": task["duration"] if task["duration"] else ("진행 중" if task["started"] else "")
+    }
+    for task in st.session_state.tasks
+]
+
+if summary_data:
+    df = pd.DataFrame(summary_data)
+    st.dataframe(df)
+else:
+    st.write("아직 등록된 과제가 없습니다.")
+
 
 # --- 나머지 메뉴는 준비 중 ---
 elif menu == "⏱️ 뽀모도로 타이머":
