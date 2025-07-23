@@ -324,16 +324,19 @@ if menu == "📈 성적 분석":
     st.subheader("➕ 성적 입력")
     with st.form("grade_form"):
         subject = st.selectbox("과목", ["국어", "수학", "영어", "사회", "과학", "한국사", "기타"])
-        test_name = st.text_input("시험 이름 (예: 1차 중간고사, 주간 테스트)")
-        score = st.number_input("점수 입력 (0 ~ 100)", min_value=0, max_value=100, step=1)
+        test_name = st.text_input("시험 이름 (예: 1차 중간고사)")
+        score = st.number_input("실제 점수 (0 ~ 100)", min_value=0, max_value=100, step=1)
+        goal = st.number_input("목표 점수 (0 ~ 100)", min_value=0, max_value=100, step=1)
         submitted = st.form_submit_button("✅ 저장")
         if submitted and test_name.strip():
             st.session_state.grades.append({
                 "과목": subject,
                 "시험": test_name.strip(),
-                "점수": score
+                "점수": score,
+                "목표": goal,
+                "차이": score - goal
             })
-            st.success(f"'{subject}'의 '{test_name}' 점수 {score}점이 저장되었습니다.")
+            st.success(f"'{subject}'의 '{test_name}' 점수 {score}점 (목표 {goal}점)이 저장되었습니다.")
 
     st.markdown("---")
 
@@ -342,17 +345,28 @@ if menu == "📈 성적 분석":
         df = pd.DataFrame(st.session_state.grades)
 
         st.subheader("📊 과목별 평균 점수")
-        subject_avg = df.groupby("과목")["점수"].mean().sort_values(ascending=False)
-        st.bar_chart(subject_avg)
+        st.bar_chart(df.groupby("과목")["점수"].mean().sort_values(ascending=False))
 
-        st.subheader("📈 시험별 점수")
-        st.dataframe(df)
+        st.subheader("📈 시험별 점수 입력 내역")
+        st.dataframe(df[["과목", "시험", "점수", "목표", "차이"]])
+
+        st.subheader("📉 목표 점수 대비 차이")
+        chart_data = df[["시험", "차이"]].set_index("시험")
+        st.bar_chart(chart_data)
+
+        st.subheader("📌 점수 미달 시험")
+        under_goal = df[df["차이"] < 0]
+        if not under_goal.empty:
+            st.warning("다음 시험들은 목표 점수에 미달했습니다:")
+            for _, row in under_goal.iterrows():
+                st.markdown(f"- ❌ **{row['과목']} - {row['시험']}**: 목표보다 {abs(row['차이'])}점 낮음")
+        else:
+            st.success("🎉 모든 시험에서 목표를 달성했어요!")
 
         st.subheader("🏅 최고 점수 Top 3")
         top3 = df.sort_values(by="점수", ascending=False).head(3).reset_index(drop=True)
         for i, row in top3.iterrows():
-            st.markdown(f"**{i+1}위. {row['과목']} - {row['시험']}**: {row['점수']}점")
-
+            st.markdown(f"**{i+1}위. {row['과목']} - {row['시험']}**: {row['점수']}점 (목표 {row['목표']})")
     else:
         st.info("아직 성적이 등록되지 않았습니다.")
 
