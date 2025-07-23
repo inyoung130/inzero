@@ -314,11 +314,51 @@ if menu == "📊 리포트 보기":
         else:
             st.warning("기록된 공부 시간이 있는 과제가 없습니다.")
 
+# ---------------- 성적 분석 ----------------
+if menu == "📈 성적 분석":
+    st.header("📈 성적 분석")
+
+    if "grades" not in st.session_state:
+        st.session_state.grades = []
+
+    st.subheader("➕ 성적 입력")
+    with st.form("grade_form"):
+        subject = st.selectbox("과목", ["국어", "수학", "영어", "사회", "과학", "한국사", "기타"])
+        test_name = st.text_input("시험 이름 (예: 1차 중간고사, 주간 테스트)")
+        score = st.number_input("점수 입력 (0 ~ 100)", min_value=0, max_value=100, step=1)
+        submitted = st.form_submit_button("✅ 저장")
+        if submitted and test_name.strip():
+            st.session_state.grades.append({
+                "과목": subject,
+                "시험": test_name.strip(),
+                "점수": score
+            })
+            st.success(f"'{subject}'의 '{test_name}' 점수 {score}점이 저장되었습니다.")
+
+    st.markdown("---")
+
+    # 분석 영역
+    if st.session_state.grades:
+        df = pd.DataFrame(st.session_state.grades)
+
+        st.subheader("📊 과목별 평균 점수")
+        subject_avg = df.groupby("과목")["점수"].mean().sort_values(ascending=False)
+        st.bar_chart(subject_avg)
+
+        st.subheader("📈 시험별 점수")
+        st.dataframe(df)
+
+        st.subheader("🏅 최고 점수 Top 3")
+        top3 = df.sort_values(by="점수", ascending=False).head(3).reset_index(drop=True)
+        for i, row in top3.iterrows():
+            st.markdown(f"**{i+1}위. {row['과목']} - {row['시험']}**: {row['점수']}점")
+
+    else:
+        st.info("아직 성적이 등록되지 않았습니다.")
+
+
 # ---------------- 기타 메뉴 ----------------
 
-elif menu == "📈 성적 분석":
-    st.header("📈 성적 분석")
-    st.info("이 기능은 곧 추가될 예정입니다.")
 
 elif menu == "🎶 MUSIC":
     st.header("🎶 MUSIC 플레이어")
