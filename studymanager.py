@@ -44,93 +44,95 @@ import pandas as pd
 # ---------------- 스터디 플래너 ----------------
 if menu == "📝 스터디 플래너":
     st.header("📝 스터디 플래너")
-# 과제 리스트 초기화
-if "tasks" not in st.session_state:
-    st.session_state.tasks = []
 
-# 과제 추가 폼
-with st.form("study_planner_form"):  # 중복 방지용 고유 이름
-    subject = st.selectbox("과목 선택", ["국어", "수학", "영어", "사회", "과학", "한국사", "직접 추가"])
-    if subject == "직접 추가":
-        subject = st.text_input("직접 입력한 과목명", key="custom_subject")
-    task_name = st.text_input("과제명 입력")
-    submitted = st.form_submit_button("✅ 과제 추가")
-    if submitted and task_name.strip() and subject.strip():
-        st.session_state.tasks.append({
-            "subject": subject.strip(),
-            "task": task_name.strip(),
-            "start_time": None,
-            "end_time": None,
-            "duration": "",
-            "started": False
-        })
-        st.success(f"'{subject}' 과목의 '{task_name}' 과제를 추가했습니다.")
+    # 과제 리스트 초기화
+    if "tasks" not in st.session_state:
+        st.session_state.tasks = []
 
-# 과제 목록 + 타이머 + 삭제
-st.subheader("📋 과제 목록 (타이머 포함)")
-if st.session_state.tasks:
-    delete_index = None
-    for i, task in enumerate(st.session_state.tasks):
-        with st.expander(f"{task['subject']} - {task['task']}"):
-            col1, col2, col3 = st.columns([4, 1, 1])
+    # 과제 추가 폼
+    with st.form("study_planner_form"):
+        subject = st.selectbox("과목 선택", ["국어", "수학", "영어", "사회", "과학", "한국사", "직접 추가"])
+        if subject == "직접 추가":
+            subject = st.text_input("직접 입력한 과목명", key="custom_subject")
+        task_name = st.text_input("과제명 입력")
+        submitted = st.form_submit_button("✅ 과제 추가")
+        if submitted and task_name.strip() and subject.strip():
+            st.session_state.tasks.append({
+                "subject": subject.strip(),
+                "task": task_name.strip(),
+                "start_time": None,
+                "end_time": None,
+                "duration": "",
+                "started": False
+            })
+            st.success(f"'{subject}' 과목의 '{task_name}' 과제를 추가했습니다.")
 
-            with col1:
-                if task["duration"]:
-                    st.info(f"⏱️ 소요 시간: {task['duration']}")
-                elif task["started"]:
-                    st.warning("⏳ 진행 중...")
+    # 과제 목록 + 타이머 + 삭제
+    st.subheader("📋 과제 목록 (타이머 포함)")
+    if st.session_state.tasks:
+        delete_index = None
+        for i, task in enumerate(st.session_state.tasks):
+            with st.expander(f"{task['subject']} - {task['task']}"):
+                col1, col2, col3 = st.columns([4, 1, 1])
 
-            with col2:
-                if not task["started"]:
-                    if st.button("▶ 시작", key=f"start_{i}"):
-                        task["start_time"] = datetime.now()
-                        task["started"] = True
-                        task["end_time"] = None
-                        task["duration"] = ""
-                        st.success("공부 시작!")
-                else:
-                    if st.button("⏹ 종료", key=f"stop_{i}"):
-                        end_time = datetime.now()
-                        start_time = task["start_time"]
-                        duration = end_time - start_time
-                        total_sec = int(duration.total_seconds())
-                        h = total_sec // 3600
-                        m = (total_sec % 3600) // 60
-                        s = total_sec % 60
-                        formatted = f"{h}시간 {m}분 {s}초"
-                        task["end_time"] = end_time
-                        task["duration"] = formatted
-                        task["started"] = False
-                        st.success(f"공부 종료 - {formatted}")
+                with col1:
+                    if task["duration"]:
+                        st.info(f"⏱️ 소요 시간: {task['duration']}")
+                    elif task["started"]:
+                        st.warning("⏳ 진행 중...")
 
-            with col3:
-                if st.button("🗑️ 삭제", key=f"delete_{i}"):
-                    delete_index = i
+                with col2:
+                    if not task["started"]:
+                        if st.button("▶ 시작", key=f"start_{i}"):
+                            task["start_time"] = datetime.now()
+                            task["started"] = True
+                            task["end_time"] = None
+                            task["duration"] = ""
+                            st.success("공부 시작!")
+                    else:
+                        if st.button("⏹ 종료", key=f"stop_{i}"):
+                            end_time = datetime.now()
+                            start_time = task["start_time"]
+                            duration = end_time - start_time
+                            total_sec = int(duration.total_seconds())
+                            h = total_sec // 3600
+                            m = (total_sec % 3600) // 60
+                            s = total_sec % 60
+                            formatted = f"{h}시간 {m}분 {s}초"
+                            task["end_time"] = end_time
+                            task["duration"] = formatted
+                            task["started"] = False
+                            st.success(f"공부 종료 - {formatted}")
 
-    if delete_index is not None:
-        deleted = st.session_state.tasks.pop(delete_index)
-        st.success(f"'{deleted['subject']}' 과목의 '{deleted['task']}' 과제를 삭제했습니다.")
-else:
-    st.info("과제가 아직 없습니다. 먼저 추가해보세요!")
+                with col3:
+                    if st.button("🗑️ 삭제", key=f"delete_{i}"):
+                        delete_index = i
 
-# 공부 요약 테이블
-st.markdown("---")
-st.subheader("📊 오늘의 공부 요약")
+        if delete_index is not None:
+            deleted = st.session_state.tasks.pop(delete_index)
+            st.success(f"'{deleted['subject']}' 과목의 '{deleted['task']}' 과제를 삭제했습니다.")
+    else:
+        st.info("과제가 아직 없습니다. 먼저 추가해보세요!")
 
-summary_data = [
-    {
-        "과목": task["subject"],
-        "과제명": task["task"],
-        "소요 시간": task["duration"] if task["duration"] else ("진행 중" if task["started"] else "")
-    }
-    for task in st.session_state.tasks
-]
+    # 공부 요약 테이블
+    st.markdown("---")
+    st.subheader("📊 오늘의 공부 요약")
 
-if summary_data:
-    df = pd.DataFrame(summary_data)
-    st.dataframe(df)
-else:
-    st.write("아직 등록된 과제가 없습니다.")
+    summary_data = [
+        {
+            "과목": task["subject"],
+            "과제명": task["task"],
+            "소요 시간": task["duration"] if task["duration"] else ("진행 중" if task["started"] else "")
+        }
+        for task in st.session_state.tasks
+    ]
+
+    if summary_data:
+        df = pd.DataFrame(summary_data)
+        st.dataframe(df)
+    else:
+        st.write("아직 등록된 과제가 없습니다.")
+
 
 
 # ---------------- 기타 메뉴 ----------------
