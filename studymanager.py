@@ -125,30 +125,28 @@ if menu == "📝 스터디 플래너":
 if menu == "⏱️ 뽀모도로 타이머":
     st.header("⏱️ 뽀모도로 타이머")
 
-    import time  # 타이머 작동용
+    import time
 
-    # 상태 초기화
+    # 초기 세션 상태 설정
     if "pomo_phase" not in st.session_state:
         st.session_state.pomo_phase = "Pomodoro"
         st.session_state.time_left = 25 * 60
         st.session_state.running = False
         st.session_state.pomo_count = 0
 
-    # 남은 시간 계산
+    # 시간 계산
     minutes = st.session_state.time_left // 60
     seconds = st.session_state.time_left % 60
     time_display = f"{minutes:02d}:{seconds:02d}"
 
-    # 현재 단계 표시
+    # 단계 및 타이머 출력
     st.markdown(f"### 🔄 현재 단계: **{st.session_state.pomo_phase}**")
-
-    # ⏳ 타이머 크게 표시
     st.markdown(
-        f"<h1 style='text-align: center; font-size: 80px;'>{time_display}</h1>",
+        f"<h1 style='text-align: center; font-size: 80px; color: #FF4B4B'>{time_display}</h1>",
         unsafe_allow_html=True
     )
 
-    # 버튼 정렬
+    # 버튼 UI 구성
     col1, col2, col3 = st.columns(3)
     with col1:
         if not st.session_state.running:
@@ -166,16 +164,16 @@ if menu == "⏱️ 뽀모도로 타이머":
             st.session_state.pomo_count = 0
 
     with col3:
-        st.write(f"✔️ 완료 세션: `{st.session_state.pomo_count}`")
+        st.metric("✅ 완료 세션", st.session_state.pomo_count)
 
     # 타이머 작동
     if st.session_state.running:
         if st.session_state.time_left > 0:
-            st.session_state.time_left -= 1
             time.sleep(1)
-            st.experimental_rerun()
+            st.session_state.time_left -= 1
+            st.rerun()
         else:
-            # 타이머 종료 → 다음 단계로 전환
+            # 타이머 완료 시 단계 전환
             if st.session_state.pomo_phase == "Pomodoro":
                 st.session_state.pomo_count += 1
                 if st.session_state.pomo_count % 4 == 0:
@@ -189,7 +187,8 @@ if menu == "⏱️ 뽀모도로 타이머":
                 st.session_state.time_left = 25 * 60
 
             st.session_state.running = False
-            st.experimental_rerun()
+            st.rerun()
+
 
 
 # ---------------- 기타 메뉴 ----------------
