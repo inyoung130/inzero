@@ -76,17 +76,23 @@ elif menu == "📈 성적 분석":
 
 elif menu == "🎶 집중MUSIC":
     st.header("🎶 집중MUSIC 플레이어")
-    st.write("잔잔한 클래식과 자연의 백색소음으로 집중력 UP!!")
+    st.write("잔잔한 클래식 음악으로 집중력을 높여보세요.")
 
-    music_choice = st.selectbox("사운드 선택", [
-        "🎻 잔잔한 클래식",
-        "🌧️ 실제 빗소리",
-        "🔥 캠프파이어 소리"
+    classical_choice = st.selectbox("🎼 클래식 곡 선택", [
+        "🎵 Slow Motion – Bensound",
+        "🎵 Better Days – Bensound",
+        "🎵 Tenderness – Bensound",
+        "🎵 Mozart - Piano Sonata",
+        "🎵 Chopin - Nocturne"
     ])
 
-    if music_choice == "🎻 잔잔한 클래식":
+    if "Slow Motion" in classical_choice:
         st.audio("https://www.bensound.com/bensound-music/bensound-slowmotion.mp3")
-    elif music_choice == "🌧️ 실제 빗소리":
-        st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3")
-    elif music_choice == "🔥 캠프파이어 소리":
-        st.audio("https://cdn.pixabay.com/download/audio/2021/11/18/audio_7b78fc29e5.mp3")
+    elif "Better Days" in classical_choice:
+        st.audio("https://www.bensound.com/bensound-music/bensound-betterdays.mp3")
+    elif "Tenderness" in classical_choice:
+        st.audio("https://www.bensound.com/bensound-music/bensound-tenderness.mp3")
+    elif "Mozart" in classical_choice:
+        st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3")
+    elif "Chopin" in classical_choice:
+        st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3")
