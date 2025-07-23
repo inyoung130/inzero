@@ -270,11 +270,51 @@ if menu == "🧠 플래시카드 기능":
     else:
         st.info("아직 이 카테고리에 카드가 없습니다. 위에서 추가해보세요.")
 
-# ---------------- 기타 메뉴 ----------------
+# ---------------- 리포트 보기 ----------------
+if menu == "📊 리포트 보기":
+    st.header("📊 학습 리포트")
 
-elif menu == "📊 리포트 보기":
-    st.header("📊 리포트 보기")
-    st.info("이 기능은 곧 추가될 예정입니다.")
+    if "tasks" not in st.session_state or not st.session_state.tasks:
+        st.info("아직 학습 기록이 없습니다. 스터디 플래너에서 과제를 추가하고 공부해보세요.")
+    else:
+        # duration 있는 과제만 필터링
+        report_data = []
+        for task in st.session_state.tasks:
+            if task["duration"]:
+                try:
+                    h = int(task["duration"].split("시간")[0].strip())
+                    m = int(task["duration"].split("시간")[1].split("분")[0].strip())
+                    s = int(task["duration"].split("분")[1].split("초")[0].strip())
+                    total_seconds = h * 3600 + m * 60 + s
+                except:
+                    total_seconds = 0
+
+                report_data.append({
+                    "과목": task["subject"],
+                    "과제명": task["task"],
+                    "소요 시간": task["duration"],
+                    "초": total_seconds
+                })
+
+        if report_data:
+            df = pd.DataFrame(report_data)
+
+            st.subheader("✅ 과목별 누적 공부 시간 (분 단위)")
+            subject_summary = df.groupby("과목")["초"].sum().sort_values(ascending=False)
+            st.bar_chart(subject_summary // 60)
+
+            st.subheader("📋 전체 과제 요약")
+            st.dataframe(df[["과목", "과제명", "소요 시간"]])
+
+            st.subheader("🏆 가장 오래 공부한 과제 Top 3")
+            top3 = df.sort_values(by="초", ascending=False).head(3).reset_index(drop=True)
+            for i, row in top3.iterrows():
+                st.markdown(f"**{i+1}위. {row['과목']} - {row['과제명']}**  \n🕒 {row['소요 시간']}")
+
+        else:
+            st.warning("기록된 공부 시간이 있는 과제가 없습니다.")
+
+# ---------------- 기타 메뉴 ----------------
 
 elif menu == "📈 성적 분석":
     st.header("📈 성적 분석")
