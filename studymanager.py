@@ -20,6 +20,7 @@ with st.sidebar:
     st.markdown("### ✨ 오늘의 명언")
     st.markdown(f"> _{today_quote}_")
     st.markdown("---")
+
     menu = st.radio("📂 메뉴 선택", [
         "📝 스터디 플래너",
         "⏱️ 뽀모도로 타이머",
@@ -29,31 +30,30 @@ with st.sidebar:
         "🎶 MUSIC"
     ])
 
-st.markdown("---")
-st.markdown("🗑️ **전체 기록 초기화**")
-if st.button("초기화 실행"):
-    for key in ["tasks", "grades", "flashcards"]:
-        if key in st.session_state:
-            del st.session_state[key]
-    st.success("✅ 모든 기록이 초기화되었습니다. 페이지를 새로고침 해주세요.")
-    
-# 테마 색상 선택
-st.sidebar.markdown("---")
-st.sidebar.markdown("🎨 **테마 색상 설정**")
+    st.markdown("---")
+    st.markdown("🎨 **테마 색상 설정**")
+    theme_color = st.color_picker("배경 색 선택", "#F0F2F6")
 
-theme_color = st.sidebar.color_picker("배경 색 선택", "#F0F2F6")  # 기본 배경색은 Streamlit 기본값
+    st.markdown("---")
+    st.markdown("🗑️ **전체 기록 초기화**")
 
-# CSS로 배경색 적용
-st.markdown(
-    f"""
-    <style>
-    .stApp {{
-        background-color: {theme_color};
-    }}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+    if "confirm_reset" not in st.session_state:
+        st.session_state.confirm_reset = False
+
+    if st.session_state.confirm_reset:
+        confirm = st.radio("정말 초기화할까요?", ["취소", "초기화 실행"], key="confirm_choice")
+        if confirm == "초기화 실행":
+            for key in ["tasks", "grades", "flashcards"]:
+                if key in st.session_state:
+                    del st.session_state[key]
+            st.success("✅ 모든 기록이 초기화되었습니다. 페이지를 새로고침 해주세요.")
+            st.session_state.confirm_reset = False  # 초기화 후 상태 리셋
+        elif confirm == "취소":
+            st.session_state.confirm_reset = False
+            st.info("초기화가 취소되었습니다.")
+    else:
+        if st.button("초기화 실행"):
+            st.session_state.confirm_reset = True
 
 
 
