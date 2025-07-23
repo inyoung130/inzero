@@ -28,65 +28,62 @@ quotes = [
     "제가 하는 가장 큰 후회는 한 단어로 요약할 수 있는데, 그것은 ‘미루기’ 입니다. – 론 쿠퍼"
 ]
 
-# --- 현재 시각 기준으로 10분 간격 인덱스 선택 ---
+# --- 현재 시간 기준으로 10분 간격 명언 선택 ---
 now = datetime.now()
 quote_index = (now.hour * 6 + now.minute // 10) % len(quotes)
 today_quote = quotes[quote_index]
 
-# --- 사이드바 ---
+# --- 사이드바 구성 ---
 with st.sidebar:
-    # 오늘의 명언
     st.markdown("### ✨ 오늘의 명언")
     st.markdown(f"> _{today_quote}_")
 
-    # 메뉴와의 여백
     st.markdown("---")
     st.markdown("<br><br><br>", unsafe_allow_html=True)
 
-    # 메뉴 선택
     menu = st.radio("📂 메뉴 선택", [
-        "스터디 플래너",
-        "뽀모도로 타이머",
-        "플래시카드 기능",
-        "리포트 보기",
-        "성적 분석",
-        "백색소음 🎵"
+        "📝 스터디 플래너",
+        "⏱️ 뽀모도로 타이머",
+        "🧠 플래시카드 기능",
+        "📊 리포트 보기",
+        "📈 성적 분석",
+        "🎵 백색소음"
     ])
 
-# --- 페이지 상단 제목 ---
+# --- 메인 타이틀 ---
 st.title("📚 스터디 매니저")
 
-# --- 메뉴별 페이지 내용 (기본 틀만 제공) ---
-if menu == "스터디 플래너":
+# --- 메뉴별 페이지 라우팅 ---
+if menu == "📝 스터디 플래너":
     st.header("📝 스터디 플래너")
     st.info("과목, 과제, 시간 관리 기능을 여기에 구현합니다.")
 
-elif menu == "뽀모도로 타이머":
+elif menu == "⏱️ 뽀모도로 타이머":
     st.header("⏱️ 뽀모도로 타이머")
     st.info("25분 집중 / 5분 휴식 타이머를 여기에 구현합니다.")
 
-elif menu == "플래시카드 기능":
+elif menu == "🧠 플래시카드 기능":
     st.header("🧠 플래시카드")
     st.info("질문과 답변으로 구성된 카드 학습 기능을 여기에 구현합니다.")
 
-elif menu == "리포트 보기":
+elif menu == "📊 리포트 보기":
     st.header("📊 리포트 보기")
     st.info("공부 시간 통계와 과목별 분석을 여기에 표시합니다.")
 
-elif menu == "성적 분석":
+elif menu == "📈 성적 분석":
     st.header("📈 성적 분석")
     st.info("시험 점수 기록 및 추이 분석을 여기에 구현합니다.")
 
-elif menu == "백색소음 🎵":
+elif menu == "🎵 백색소음":
     st.header("🎵 백색소음 플레이어")
     st.write("공부할 때 집중을 도와주는 자연의 소리를 재생합니다.")
 
-    sound_option = st.selectbox("소리 선택", ["파도 소리 🌊", "빗소리 🌧️", "숲 소리 🌲", "화이트 노이즈 📻"])
-    if sound_option == "파도 소리 🌊":
+    sound_option = st.selectbox("소리 선택", ["🌊 파도 소리", "🌧️ 빗소리", "🌲 숲 소리", "📻 화이트 노이즈"])
+    if sound_option == "🌊 파도 소리":
         st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3")
-    elif sound_option == "빗소리 🌧️":
+    elif sound_option == "🌧️ 빗소리":
         st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3")
-    elif sound_option == "숲 소리 🌲":
+    elif sound_option == "🌲 숲 소리":
         st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3")
-    elif sound_option == "화이트 노이즈 📻":
+    elif sound_option == "📻 화이트 노이즈":
         st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3")
