@@ -50,7 +50,8 @@ st.markdown(
 
 
     st.markdown("---")
-    if st.button("🗑️ 모든 기록 초기화"):
+    st.markdown("🗑️ **전체 기록 초기화**")
+    if st.button("초기화 실행"):
         for key in ["tasks", "grades", "flashcards"]:
             if key in st.session_state:
                 del st.session_state[key]
