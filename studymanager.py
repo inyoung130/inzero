@@ -75,8 +75,7 @@ if st.session_state.tasks:
                         st.info(f"⏱️ 소요 시간: {task['duration']}")
                     elif task["started"]:
                         st.warning("⏳ 진행 중...")
-
-                with col2:
+            with col2:
                     if not task["started"]:
                         if st.button("▶ 시작", key=f"start_{i}") and task["task"].strip():
                             st.session_state.tasks[i]["start_time"] = datetime.now()
