@@ -62,7 +62,7 @@ if menu == "📝 스터디 플래너":
                 "duration": "",
                 "started": False
             })
-            st.success(f"'{subject}' 과목에 '{task_name}' 과제가 추가되었습니다.")    st.subheader("📋 과제 목록 (타이머 포함)")
+        st.success(f"'{subject}' 과목에 '{task_name}' 과제가 추가되었습니다.")    st.subheader("📋 과제 목록 (타이머 포함)")
 
     if st.session_state.tasks:
         for i, task in enumerate(st.session_state.tasks):
