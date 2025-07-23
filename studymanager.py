@@ -51,11 +51,11 @@ st.markdown(
 
 st.markdown("---")
 st.markdown("🗑️ **전체 기록 초기화**")
-    if st.button("초기화 실행"):
-        for key in ["tasks", "grades", "flashcards"]:
-            if key in st.session_state:
-                del st.session_state[key]
-        st.success("✅ 모든 기록이 초기화되었습니다. 페이지를 새로고침 해주세요.")
+if st.button("초기화 실행"):
+    for key in ["tasks", "grades", "flashcards"]:
+        if key in st.session_state:
+            del st.session_state[key]
+    st.success("✅ 모든 기록이 초기화되었습니다. 페이지를 새로고침 해주세요.")
 
 # ---------------- 스터디 플래너 ----------------
 if menu == "📝 스터디 플래너":
