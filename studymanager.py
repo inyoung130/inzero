@@ -121,12 +121,78 @@ if menu == "📝 스터디 플래너":
     else:
         st.write("아직 등록된 과제가 없습니다.")
 
+# ---------------- 뽀모도로 타이머 ----------------
+if menu == "⏱️ 뽀모도로 타이머":
+    st.header("⏱️ 뽀모도로 타이머")
+
+    import time  # 타이머 작동용
+
+    # 상태 초기화
+    if "pomo_phase" not in st.session_state:
+        st.session_state.pomo_phase = "Pomodoro"
+        st.session_state.time_left = 25 * 60
+        st.session_state.running = False
+        st.session_state.pomo_count = 0
+
+    # 남은 시간 계산
+    minutes = st.session_state.time_left // 60
+    seconds = st.session_state.time_left % 60
+    time_display = f"{minutes:02d}:{seconds:02d}"
+
+    # 현재 단계 표시
+    st.markdown(f"### 🔄 현재 단계: **{st.session_state.pomo_phase}**")
+
+    # ⏳ 타이머 크게 표시
+    st.markdown(
+        f"<h1 style='text-align: center; font-size: 80px;'>{time_display}</h1>",
+        unsafe_allow_html=True
+    )
+
+    # 버튼 정렬
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if not st.session_state.running:
+            if st.button("▶ 시작"):
+                st.session_state.running = True
+        else:
+            if st.button("⏹ 정지"):
+                st.session_state.running = False
+
+    with col2:
+        if st.button("🔄 초기화"):
+            st.session_state.pomo_phase = "Pomodoro"
+            st.session_state.time_left = 25 * 60
+            st.session_state.running = False
+            st.session_state.pomo_count = 0
+
+    with col3:
+        st.write(f"✔️ 완료 세션: `{st.session_state.pomo_count}`")
+
+    # 타이머 작동
+    if st.session_state.running:
+        if st.session_state.time_left > 0:
+            st.session_state.time_left -= 1
+            time.sleep(1)
+            st.experimental_rerun()
+        else:
+            # 타이머 종료 → 다음 단계로 전환
+            if st.session_state.pomo_phase == "Pomodoro":
+                st.session_state.pomo_count += 1
+                if st.session_state.pomo_count % 4 == 0:
+                    st.session_state.pomo_phase = "Long Break"
+                    st.session_state.time_left = 15 * 60
+                else:
+                    st.session_state.pomo_phase = "Short Break"
+                    st.session_state.time_left = 5 * 60
+            else:
+                st.session_state.pomo_phase = "Pomodoro"
+                st.session_state.time_left = 25 * 60
+
+            st.session_state.running = False
+            st.experimental_rerun()
 
 
 # ---------------- 기타 메뉴 ----------------
-if menu == "⏱️ 뽀모도로 타이머":
-    st.header("⏱️ 뽀모도로 타이머")
-    st.info("이 기능은 곧 추가될 예정입니다.")
 
 elif menu == "🧠 플래시카드 기능":
     st.header("🧠 플래시카드 기능")
