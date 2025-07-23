@@ -62,8 +62,7 @@ if menu == "📝 스터디 플래너":
                 "duration": "",
                 "started": False
             })
-            st.success(f"'{subject}' 과목에 '{task_name}' 과제가 추가되었습니다.")
-                st.subheader("📋 과제 목록 (타이머 포함)")
+            st.success(f"'{subject}' 과목에 '{task_name}' 과제가 추가되었습니다.")    st.subheader("📋 과제 목록 (타이머 포함)")
 
     if st.session_state.tasks:
         for i, task in enumerate(st.session_state.tasks):
@@ -107,5 +106,50 @@ if menu == "📝 스터디 플래너":
         {
             "과목": task["subject"],
             "과제명": task["task"],
-            "소요 시간": task["duration"] if task["duration"] else ("진행 중" if t
+            "소요 시간": task["duration"] if task["duration"] else ("진행 중" if task["started"] else "")
+        }
+        for task in st.session_state.tasks
+    ]
 
+    if summary_data:
+        df = pd.DataFrame(summary_data)
+        st.dataframe(df)
+    else:
+        st.write("아직 등록된 과제가 없습니다.")
+
+# ---------------- 기타 메뉴 ----------------
+elif menu == "⏱️ 뽀모도로 타이머":
+    st.header("⏱️ 뽀모도로 타이머")
+    st.info("이 기능은 곧 추가될 예정입니다.")
+
+elif menu == "🧠 플래시카드 기능":
+    st.header("🧠 플래시카드 기능")
+    st.info("이 기능은 곧 추가될 예정입니다.")
+
+elif menu == "📊 리포트 보기":
+    st.header("📊 리포트 보기")
+    st.info("이 기능은 곧 추가될 예정입니다.")
+
+elif menu == "📈 성적 분석":
+    st.header("📈 성적 분석")
+    st.info("이 기능은 곧 추가될 예정입니다.")
+
+elif menu == "🎶 집중MUSIC":
+    st.header("🎶 집중MUSIC 플레이어")
+    music = st.selectbox("🎼 클래식 곡 선택", [
+        "🎵 Slow Motion – Bensound",
+        "🎵 Better Days – Bensound",
+        "🎵 Tenderness – Bensound",
+        "🎵 Mozart - Piano Sonata",
+        "🎵 Chopin - Nocturne"
+    ])
+    if "Slow Motion" in music:
+        st.audio("https://www.bensound.com/bensound-music/bensound-slowmotion.mp3")
+    elif "Better Days" in music:
+        st.audio("https://www.bensound.com/bensound-music/bensound-betterdays.mp3")
+    elif "Tenderness" in music:
+        st.audio("https://www.bensound.com/bensound-music/bensound-tenderness.mp3")
+    elif "Mozart" in music:
+        st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3")
+    elif "Chopin" in music:
+        st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3")
