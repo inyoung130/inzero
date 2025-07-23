@@ -29,6 +29,25 @@ with st.sidebar:
         "🎶 MUSIC"
     ])
 
+
+# 테마 색상 선택
+st.sidebar.markdown("---")
+st.sidebar.markdown("🎨 **테마 색상 설정**")
+
+theme_color = st.sidebar.color_picker("배경 색 선택", "#F0F2F6")  # 기본 배경색은 Streamlit 기본값
+
+# CSS로 배경색 적용
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-color: {theme_color};
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # ---------------- 스터디 플래너 ----------------
 if menu == "📝 스터디 플래너":
     st.header("📝 스터디 플래너")
