@@ -28,6 +28,11 @@ with st.sidebar:
     st.markdown("### ✨ 오늘의 명언")
     st.markdown(f"> _{today_quote}_")
     st.markdown("---")
+    menu = st.sidebar.selectbox(
+    "📚 메뉴 선택",
+    ["📝 스터디 플래너", "⏱️ 뽀모도로 타이머", "🧠 플래시카드 기능", "📊 리포트 보기", "📈 성적 분석", "🎶 MUSIC"]
+)
+
     menu = st.radio("📂 메뉴 선택", [
         "📝 스터디 플래너",
         "⏱️ 뽀모도로 타이머",
