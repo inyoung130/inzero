@@ -24,27 +24,24 @@ quote_index = (now.hour * 6 + now.minute // 10) % len(quotes)
 today_quote = quotes[quote_index]
 
 # 사이드바
+import streamlit as st
+from datetime import datetime
+import pandas as pd
+
+# 사이드바: 명언 + 메뉴 선택
 with st.sidebar:
     st.markdown("### ✨ 오늘의 명언")
     st.markdown(f"> _{today_quote}_")
     st.markdown("---")
-    menu = st.sidebar.selectbox(
-    "📚 메뉴 선택",
-    ["📝 스터디 플래너", "⏱️ 뽀모도로 타이머", "🧠 플래시카드 기능", "📊 리포트 보기", "📈 성적 분석", "🎶 MUSIC"]
-)
 
-    menu = st.radio("📂 메뉴 선택", [
-        "📝 스터디 플래너",
-        "⏱️ 뽀모도로 타이머",
-        "🧠 플래시카드 기능",
-        "📊 리포트 보기",
-        "📈 성적 분석",
-        "🎶 집중MUSIC"
-    ])
-
-import streamlit as st
-from datetime import datetime
-import pandas as pd
+menu = st.radio("📂 메뉴 선택", [
+    "📝 스터디 플래너",
+    "⏱️ 뽀모도로 타이머",
+    "🧠 플래시카드 기능",
+    "📊 리포트 보기",
+    "📈 성적 분석",
+    "🎶 MUSIC"   # 이 이름을 코드 내부 if 조건문과 정확히 맞춰야 함 
+])
 
 # ---------------- 스터디 플래너 ----------------
 if menu == "📝 스터디 플래너":
