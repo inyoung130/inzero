@@ -47,7 +47,7 @@ with st.sidebar:
         "🧠 플래시카드 기능",
         "📊 리포트 보기",
         "📈 성적 분석",
-        "🎶 집중MUSIC"
+        "🎶 MUSIC"
     ])
 
 # --- 메인 타이틀 ---
@@ -74,8 +74,8 @@ elif menu == "📈 성적 분석":
     st.header("📈 성적 분석")
     st.info("시험 점수 기록 및 분석")
 
-elif menu == "🎶 집중MUSIC":
-    st.header("🎶 집중MUSIC 플레이어")
+elif menu == "🎶 MUSIC":
+    st.header("🎶 MUSIC 플레이어")
     st.info("잔잔한 클래식 음악으로 집중력UP 성적UP")
 
     classical_choice = st.selectbox("🎼 클래식 곡 선택", [
