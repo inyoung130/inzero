@@ -48,6 +48,14 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
+    st.markdown("---")
+    if st.button("🗑️ 모든 기록 초기화"):
+        for key in ["tasks", "grades", "flashcards"]:
+            if key in st.session_state:
+                del st.session_state[key]
+        st.success("✅ 모든 기록이 초기화되었습니다. 페이지를 새로고침 해주세요.")
+
 # ---------------- 스터디 플래너 ----------------
 if menu == "📝 스터디 플래너":
     st.header("📝 스터디 플래너")
