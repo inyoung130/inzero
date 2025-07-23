@@ -150,8 +150,8 @@ elif menu == "📈 성적 분석":
     st.header("📈 성적 분석")
     st.info("이 기능은 곧 추가될 예정입니다.")
 
-elif menu == "🎶 집중MUSIC":
-    st.header("🎶 집중MUSIC 플레이어")
+elif menu == "🎶 MUSIC":
+    st.header("🎶 MUSIC 플레이어")
     music = st.selectbox("🎼 클래식 곡 선택", [
         "🎵 Slow Motion – Bensound",
         "🎵 Better Days – Bensound",
