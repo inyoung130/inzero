@@ -55,19 +55,21 @@ if menu == "📝 스터디 플래너":
     with col3:
         if st.button("✅ 과제 추가") and task_name.strip() and subject.strip():
             st.session_state.tasks.append({
-                "subject": subject.strip(),
-                "task": task_name.strip(),
-                "start_time": None,
-                "end_time": None,
-                "duration": "",
-                "started": False
-            })
-        st.success(f"'{subject}' 과목에 '{task_name}' 과제가 추가되었습니다.")    st.subheader("📋 과제 목록 (타이머 포함)")
+ "subject": subject.strip(),
+        "task": task_name.strip(),
+        "start_time": None,
+        "end_time": None,
+        "duration": "",
+        "started": False
+    })
+    st.success(f"'{subject}' 과목에 '{task_name}' 과제가 추가되었습니다.")
 
-    if st.session_state.tasks:
-        for i, task in enumerate(st.session_state.tasks):
-            with st.expander(f"{task['subject']} - {task['task']}"):
-                col1, col2 = st.columns([5, 1])
+st.subheader("📋 과제 목록 (타이머 포함)")
+
+if st.session_state.tasks:
+    for i, task in enumerate(st.session_state.tasks):
+        with st.expander(f"{task['subject']} - {task['task']}"):
+            col1, col2 = st.columns([5, 1])
                 with col1:
                     if task["duration"]:
                         st.info(f"⏱️ 소요 시간: {task['duration']}")
