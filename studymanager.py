@@ -49,8 +49,8 @@ st.markdown(
 )
 
 
-    st.markdown("---")
-    st.markdown("🗑️ **전체 기록 초기화**")
+st.markdown("---")
+st.markdown("🗑️ **전체 기록 초기화**")
     if st.button("초기화 실행"):
         for key in ["tasks", "grades", "flashcards"]:
             if key in st.session_state:
